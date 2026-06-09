@@ -11,4 +11,4 @@ jobs:
 
     permissions:
       contents: read
-      packafes: write
+      packages: write
