@@ -1,0 +1,15 @@
+{
+    "name": "integracion-continua-pli",
+    "version": "1.0.0",
+    "description": "API Sencilla con node.js, express, mysql y docker para primera entrega",
+    "main": "src/inde.js",
+    "scripts": {
+        "start": "node src/index.js"
+    },
+    "dependencies": {
+        "express": "4.18.2",
+        "mysql": "3.9.7"
+    },
+    "author": "Juan Camilo Rojas Rojas",
+    "license": "MIT"
+}
