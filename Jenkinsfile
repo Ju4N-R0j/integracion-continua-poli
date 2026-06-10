@@ -1,85 +1,84 @@
 pipeline {
     agent any
 
-    enviroment {
+    environment {
         IMAGE_NAME = 'integracion-api-jenkins'
         IMAGE_TAG = '2.0'
-        APP_URL = 'http://localhost:3000/healt'
+        APP_URL = 'http://localhost:3000/health'
     }
 
     stages {
-        stage('Checkout'){
+        stage('Checkout') {
             steps {
-                echo 'Clonado repositorio desde GitHub...'
+                echo 'Clonando repositorio desde GitHub...'
                 checkout scm
             }
         }
 
-        stage('Verificar Docker'){
+        stage('Verificar Docker') {
             steps {
-                echo 'Validando Disponibilidad de Docker...'
+                echo 'Validando disponibilidad de Docker en Jenkins...'
                 bat 'docker --version'
                 bat 'docker compose version'
             }
         }
 
-        stage('Construir imagen Docker'){
+        stage('Construir imagen Docker') {
             steps {
                 echo 'Construyendo imagen Docker de la API...'
                 bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
             }
         }
 
-        stage('Limpiar contenedores anteriores'){
+        stage('Limpiar contenedores anteriores') {
             steps {
-                echo 'Deteniendo contenedores anterios si existen...'
+                echo 'Deteniendo contenedores anteriores si existen...'
                 bat 'docker compose down -v || exit 0'
             }
         }
 
-        stage('Desplegar aplicacion con Docker Compose'){
+        stage('Desplegar aplicacion con Docker Compose') {
             steps {
-                echo 'Levantando API Y DB con docker compose...'
+                echo 'Levantando API y base de datos con Docker Compose...'
                 bat 'docker compose up -d'
             }
         }
 
-        stage('Validar Contenedores'){
+        stage('Validar contenedores') {
             steps {
-                echo 'Listando Contenedores activos...'
+                echo 'Listando contenedores activos...'
                 bat 'docker ps'
             }
         }
 
-        stage('Esperar servicios'){
+        stage('Esperar servicios') {
             steps {
                 echo 'Esperando inicializacion de servicios...'
-                bat 'powershell -Command "Star-Sleep -Seconds 20"'
+                bat 'powershell -Command "Start-Sleep -Seconds 20"'
             }
         }
 
-        stage('Probar API'){
+        stage('Probar API') {
             steps {
-                echo 'Validando endpoint /health de API...'
-                bat 'powershell -Command "Invoke-WebRequest -Uri %APP_URL%" -UseBasicParsing'
+                echo 'Validando endpoint /health de la API...'
+                bat 'powershell -Command "Invoke-WebRequest -Uri %APP_URL% -UseBasicParsing"'
             }
-
-    }
-}
-
-post {
-    succes {
-        echo 'Pipeline ejecutado correctamente.'
+        }
     }
 
-    failure {
-        echo 'Pipeline ejecutado incorrectamente. Revisar Logs de ejecucion'
-    }
+    post {
+        success {
+            echo 'Pipeline ejecutado correctamente. Jenkins construyo y desplego la aplicacion.'
+        }
 
-    always {
-        echo 'Estado final de contendores:'
-        bat 'docker ps -a'
-    }
+        failure {
+            echo 'El pipeline fallo. Revisar logs de Jenkins para identificar el problema.'
+            bat 'docker compose logs || exit 0'
+        }
 
-    
+        always {
+            echo 'Estado final de contenedores:'
+            bat 'docker ps -a'
+        }
+    }
 }
