@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'integracion-api-jenkins'
-        IMAGE_TAG = '2.0'
+        IMAGE_TAG = 'latest'
         APP_URL = 'http://localhost:3000/health'
     }
 
