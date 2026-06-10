@@ -1,0 +1,45 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: integracion_db
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ci-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: integracion-api-jenkins:latest
+    container_name: api-container
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql-container
+      DB_USER: appuser
+      DB_PASSWORD: apppassword
+      DB_NAME: integracion_db
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - ci-network
+
+volumes:
+  mysql_data:
+
+networks:
+  ci-network:
+    driver: bridge
