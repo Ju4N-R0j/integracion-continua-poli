@@ -45,7 +45,7 @@ jobs:
         run: curl --fail http://localhost:3000/health
         
       - name: probar endpoint task
-        run: curl --fail http://localhost:3000/task
+        run: curl --fail http://localhost:3000/tasks
 
       - name: probar endpoint health
         run: curl --fail http://localhost:3000/health 
