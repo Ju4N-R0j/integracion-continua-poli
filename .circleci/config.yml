@@ -3,23 +3,24 @@ version: 2.1
 jobs:
   build-test:
     docker:
-      - image: cimg/node:20.0
+      - image: cimg/node:20.11
     steps:
       - checkout
+
       - setup_remote_docker:
           docker_layer_caching: false
-      
-      - run:
-        name: instalar dependencias
-        command: npm install
 
       - run:
-        name: construir imagen de Docker
-        command: docker build -t integracion-api:circleci .
+          name: Instalar dependencias
+          command: npm install
 
       - run:
-        name: verificar imagen de Docker
-        command: docker images | grep integracion-api
+          name: Construir imagen Docker
+          command: docker build -t integracion-api:circleci .
+
+      - run:
+          name: Verificar imagen Docker
+          command: docker images | grep integracion-api
 
 workflows:
   version: 2
