@@ -1,6 +1,6 @@
 version: 2.1
 
-jopbs:
+jobs:
   build-test:
     docker:
       - image: cimg/node:20.0
