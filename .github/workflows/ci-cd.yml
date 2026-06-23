@@ -30,7 +30,7 @@ jobs:
         run: docker --version
 
       - name: construir imagen de Docker
-        run: docker build -t integracion-api:github-actions .
+        run: docker build -t integracion-api-jenkins:latest .
         
       - name: levantar contenedor de Docker
         run: docker compose up -d
