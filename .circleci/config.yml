@@ -9,15 +9,15 @@ jopbs:
       - setup_remote_docker:
           docker_layer_caching: false
       
-      run:
+      - run:
         name: instalar dependencias
         command: npm install
 
-      run:
+      - run:
         name: construir imagen de Docker
         command: docker build -t integracion-api:circleci .
 
-      run:
+      - run:
         name: verificar imagen de Docker
         command: docker images | grep integracion-api
 
